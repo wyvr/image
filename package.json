@@ -1,32 +1,32 @@
 {
-  "name": "@wyvr/image",
-  "version": "0.0.2",
-  "description": "Image processing for APIs with sharp/vips",
-  "scripts": {
-      "dev-hapi": "nodemon --ignore test samples/hapi_basic.js",
-      "test": "nyc mocha --reporter dot './test/**/*.js'",
-      "test-watch": "nodemon --watch src --watch test --exec 'npm run test'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/wyvr/image.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/wyvr/image/issues"
-  },
-  "homepage": "https://github.com/wyvr/image#readme",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "md5": "^2.3.0",
-    "sharp": "^0.27.2"
-  },
-  "devDependencies": {
-    "@hapi/hapi": "^20.1.1",
-    "@hapi/inert": "^6.0.3",
-    "mocha": "^8.3.2",
-    "nodemon": "^2.0.7",
-    "nyc": "^15.1.0"
-  }
+    "name": "@wyvr/image",
+    "version": "0.0.3",
+    "description": "Image processing for APIs with sharp/vips",
+    "scripts": {
+        "dev-hapi": "nodemon --ignore test samples/hapi_basic.js",
+        "test": "nyc mocha --reporter dot './test/**/*.js'",
+        "test-watch": "nodemon --watch src --watch test --exec 'npm run test'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wyvr/image.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/wyvr/image/issues"
+    },
+    "homepage": "https://github.com/wyvr/image#readme",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "md5": "^2.3.0",
+        "sharp": "^0.27.2"
+    },
+    "devDependencies": {
+        "@hapi/hapi": "^20.1.1",
+        "@hapi/inert": "^6.0.3",
+        "mocha": "^8.3.2",
+        "nodemon": "^2.0.7",
+        "nyc": "^15.1.0"
+    }
 }
