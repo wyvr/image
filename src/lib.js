@@ -346,7 +346,7 @@ module.exports = {
         }
         return options;
     },
-    async apply_transformations(data, target_config) {
+    async apply_transformations(data, type, target_config) {
         if (target_config.params?.w != null || target_config.params?.h != null) {
             const resize = {};
             // (W)idth
@@ -359,7 +359,12 @@ module.exports = {
             }
             // (M)ode
             if (target_config.params?.m != null) {
-                resize[target_config.params.m] = true;
+                resize.fit = target_config.params.m;
+                resize.background = { r: 0, g: 0, b: 0, alpha: 0 };
+                // fill with white background color when jpg otherwise transparent
+                if (type && type == 'jpeg') {
+                    resize.background = { r: 255, g: 255, b: 255, alpha: 1 };
+                }
             }
             // (P)osition
             if (target_config.params?.p != null) {
@@ -422,23 +427,23 @@ module.exports = {
     read_result_cache_file(system, url, config) {
         const cache_file = this.get_cache_file_url(system, url, config);
         const cache = this.read_cache_file(cache_file, this.get_config('cache_result'), this.get_config('cache_duration'));
-        
+
         return cache;
     },
     async read_remote_cache_file(system, url) {
         const cache_file = this.get_cache_remote_file_url(system, url);
         const cache = this.read_cache_file(cache_file, this.get_config('cache_remote_files'), this.get_config('cache_remote_duration'));
         // type of the cache file can not be extracted, get it with sharp
-        if(cache_file.indexOf('/file.cache') > -1 && !cache.type && cache.buffer) {
+        if (cache_file.indexOf('/file.cache') > -1 && !cache.type && cache.buffer) {
             try {
                 // get the format of the buffer
                 const sharp_instance = await sharp(cache.buffer);
                 const meta_data = await sharp_instance.metadata();
-                if(!meta_data) {
+                if (!meta_data) {
                     return null;
                 }
                 cache.type = this.get_mime_type(meta_data.format);
-            } catch(err) {
+            } catch (err) {
                 // @TODO Logging
                 return null;
             }
