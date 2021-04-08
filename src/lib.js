@@ -495,7 +495,7 @@ module.exports = {
             }
             url += 'file.cache';
         }
-        const cache_file = path.join(cwd, 'remote_cache', system, config_hash, url);
+        const cache_file = path.join(cwd, 'remote_cache', system, url);
         return cache_file;
     },
 };
