@@ -5,6 +5,7 @@ const axios = require('axios');
 const sharp = require('sharp');
 const md5 = require('md5');
 const normalize_param_value = require('./lib/normalize_param_value');
+const cwd = process.cwd();
 
 module.exports = {
     config: null,
@@ -418,11 +419,18 @@ module.exports = {
     },
     write_buffer_to_cache(buffer, file_path) {
         if (!buffer || !file_path) {
-            return;
+            return false;
         }
         const dir_name = path.dirname(file_path);
         fs.mkdirSync(dir_name, { recursive: true });
+        if(!fs.existsSync(dir_name)) {
+            throw new Error(`dir ${dir_name} does not exist`)
+        }
         fs.writeFileSync(file_path, buffer);
+        if(!fs.existsSync(file_path)) {
+            throw new Error(`file ${file_path} does not exist`)
+        }
+        return true;
     },
     read_result_cache_file(system, url, config) {
         const cache_file = this.get_cache_file_url(system, url, config);
@@ -476,7 +484,7 @@ module.exports = {
             config_params = config.params;
         }
         const config_hash = md5(JSON.stringify(config_params));
-        const cache_file = `./cache/${system}/${config_hash}/${url}`;
+        const cache_file = path.join(cwd, 'cache', system, config_hash, url);
         return cache_file;
     },
     get_cache_remote_file_url(system, url) {
@@ -487,7 +495,7 @@ module.exports = {
             }
             url += 'file.cache';
         }
-        const cache_file = `./remote_cache/${system}/${url}`;
+        const cache_file = path.join(cwd, 'remote_cache', system, config_hash, url);
         return cache_file;
     },
 };

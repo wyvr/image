@@ -39,6 +39,7 @@ const Image = function () {
                     buffer: null,
                     type: null,
                     config: lib.get_config(),
+                    error: []
                 };
 
                 const cached_file = lib.read_result_cache_file(system, url, target_config);
@@ -70,7 +71,11 @@ const Image = function () {
                         return lib.get_default_image_result(result);
                     }
                     if (file_path.indexOf('http') == 0) {
-                        lib.write_buffer_to_remote_cache(image, system, url);
+                        try {
+                            lib.write_buffer_to_remote_cache(image, system, url);
+                        } catch(e) {
+                            result.error.push(e);
+                        }
                     }
                     const type = lib.get_mime_type(target_config.params?.t);
                     if (type) {
@@ -82,7 +87,11 @@ const Image = function () {
                     return lib.get_default_image_result(result);
                 }
                 // store file in cache
-                lib.write_buffer_to_result_cache(transformed_image.buffer, system, url, target_config);
+                try {
+                    lib.write_buffer_to_result_cache(transformed_image.buffer, system, url, target_config);
+                } catch(e) {
+                    result.error.push(e);
+                }
                 result.buffer = transformed_image.buffer;
                 result.type = transformed_image.type;
                 result.success = true;

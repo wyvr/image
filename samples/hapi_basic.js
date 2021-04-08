@@ -37,6 +37,12 @@ const init = async () => {
                 },
             });
             const result = await image.process(system, url);
+
+            if (result.error.length > 0) {
+                result.error.forEach((error)=>{
+                    console.log(`x ${error}`);
+                })
+            }
             if (result.from_remote_cache) {
                 console.log('- from remote cache');
             }
