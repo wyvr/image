@@ -1,6 +1,6 @@
 {
     "name": "@wyvr/image",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Image processing for APIs with sharp/vips",
     "scripts": {
         "dev-hapi": "nodemon --ignore test samples/hapi_basic.js",
@@ -20,10 +20,10 @@
     "dependencies": {
         "axios": "^0.21.1",
         "md5": "^2.3.0",
-        "sharp": "^0.27.2"
+        "sharp": "^0.28.1"
     },
     "devDependencies": {
-        "@hapi/hapi": "^20.1.1",
+        "@hapi/hapi": "^20.1.2",
         "@hapi/inert": "^6.0.3",
         "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
