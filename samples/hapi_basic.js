@@ -26,8 +26,9 @@ const init = async () => {
             const system = request.params.system ?? null;
 
             const url = request.params.url ?? null;
+
             if (!url) {
-                return null;
+                return h.response(null);
             }
             console.log('get', system, url);
             const image = Image(request, {
@@ -36,12 +37,16 @@ const init = async () => {
                     http: 'https://placeimg.com/',
                 },
             });
+
             const result = await image.process(system, url);
+            if (!result || !result.buffer || !result.type) {
+                return h.response('x empty result');
+            }
 
             if (result.error.length > 0) {
-                result.error.forEach((error)=>{
+                result.error.forEach((error) => {
                     console.log(`x ${error}`);
-                })
+                });
             }
             if (result.from_remote_cache) {
                 console.log('- from remote cache');
@@ -60,10 +65,9 @@ const init = async () => {
             }
             const execution_time = process.hrtime(start);
             const execution_ms = Math.round((execution_time[0] + execution_time[1] / 1000000000) * 1000);
+            console.log(`- type: ${result.type}`);
             console.log('> done', execution_ms, 'ms');
-            fs.writeFileSync('./test.jpg', result.buffer);
             return h.response(result.buffer).type(result.type);
-            // return `${system} => ${url} ${JSON.stringify(request.query)}\n${JSON.stringify(request.response)} ${Object.keys(h).join('\n')}`;
         },
     });
     server.route({
