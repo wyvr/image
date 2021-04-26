@@ -14,6 +14,7 @@ module.exports = {
     default_quality: 90,
     default_mode: 'contain',
     default_position: ['center', 'middle'],
+    background: { r: 255, g: 255, b: 255, alpha: 0 }, // @see https://www.npmjs.com/package/color
     cache_result: true,
     cache_duration: 3600, // 1h cache duration in seconds
     cache_remote_files: true,

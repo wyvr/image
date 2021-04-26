@@ -6,6 +6,7 @@ const sharp = require('sharp');
 const md5 = require('md5');
 const normalize_param_value = require('./lib/normalize_param_value');
 const cwd = process.cwd();
+const color = require('color');
 
 module.exports = {
     config: null,
@@ -349,6 +350,11 @@ module.exports = {
     },
     async apply_transformations(data, type, target_config, config) {
         if (target_config.params?.w != null || target_config.params?.h != null) {
+            // fill with white background color when jpg otherwise transparent
+            let background = color(config.background);
+            if (type && type == 'image/jpeg') {
+                background = background.alpha(1);
+            }
             let resize = {};
             // (W)idth
             if (target_config.params?.w != null) {
@@ -361,11 +367,7 @@ module.exports = {
             // (M)ode
             if (target_config.params?.m != null) {
                 resize.fit = target_config.params.m;
-                resize.background = { r: 0, g: 0, b: 0, alpha: 0 };
-                // fill with white background color when jpg otherwise transparent
-                if (type && type == 'jpeg') {
-                    resize.background = { r: 255, g: 255, b: 255, alpha: 1 };
-                }
+                resize.background = background;
             }
             // check if image is smaller then the given sizes and change the width to return propotional correct image
             if (!config?.enlarge_image && resize.width && resize.height && resize.fit == 'contain') {
@@ -394,7 +396,7 @@ module.exports = {
                             data = data.blur(filter_value);
                             break;
                         case 'rotate':
-                            data = data.rotate(filter_value, { background: '#FFFFFF' });
+                            data = data.rotate(filter_value, { background });
                             break;
                         case 'negate':
                             data = data.negate();
