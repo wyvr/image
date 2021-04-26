@@ -347,9 +347,9 @@ module.exports = {
         }
         return options;
     },
-    async apply_transformations(data, type, target_config) {
+    async apply_transformations(data, type, target_config, config) {
         if (target_config.params?.w != null || target_config.params?.h != null) {
-            const resize = {};
+            let resize = {};
             // (W)idth
             if (target_config.params?.w != null) {
                 resize.width = target_config.params.w;
@@ -367,6 +367,11 @@ module.exports = {
                     resize.background = { r: 255, g: 255, b: 255, alpha: 1 };
                 }
             }
+            // check if image is smaller then the given sizes and change the width to return propotional correct image
+            if (!config?.enlarge_image && resize.width && resize.height && resize.fit == 'contain') {
+                const meta_data = await data.metadata();
+                resize = this.adjust_resize(resize, meta_data);
+            }
             // (P)osition
             if (target_config.params?.p != null) {
                 // remove center and middle, not allowed in sharp
@@ -381,7 +386,6 @@ module.exports = {
 
             // (F)ilter
             if (target_config.params?.f != null) {
-                console.log(target_config.params?.f);
                 const filter_keys = Object.keys(target_config.params?.f);
                 filter_keys.forEach((filter) => {
                     const filter_value = target_config.params?.f[filter];
@@ -403,6 +407,21 @@ module.exports = {
         }
         return data.toBuffer();
     },
+    adjust_resize(resize, meta_data) {
+        const adjusted = Object.assign({}, resize);
+        if (!adjusted || !adjusted.width || !adjusted.height || !meta_data.width || !meta_data.height) {
+            return adjusted;
+        }
+        if (adjusted.width <= meta_data.width && adjusted.height <= meta_data.height) {
+            return adjusted;
+        }
+        const ratio = Math.min(meta_data.width / adjusted.width, meta_data.height / adjusted.height);
+
+        adjusted.width = Math.round(adjusted.width * ratio);
+        adjusted.height = Math.round(adjusted.height * ratio);
+
+        return adjusted;
+    },
     write_buffer_to_result_cache(buffer, system, url, config) {
         if (!this.get_config('cache_result')) {
             return;
@@ -423,12 +442,12 @@ module.exports = {
         }
         const dir_name = path.dirname(file_path);
         fs.mkdirSync(dir_name, { recursive: true });
-        if(!fs.existsSync(dir_name)) {
-            throw new Error(`dir ${dir_name} does not exist`)
+        if (!fs.existsSync(dir_name)) {
+            throw new Error(`dir ${dir_name} does not exist`);
         }
         fs.writeFileSync(file_path, buffer);
-        if(!fs.existsSync(file_path)) {
-            throw new Error(`file ${file_path} does not exist`)
+        if (!fs.existsSync(file_path)) {
+            throw new Error(`file ${file_path} does not exist`);
         }
         return true;
     },

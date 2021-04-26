@@ -18,5 +18,6 @@ module.exports = {
     cache_duration: 3600, // 1h cache duration in seconds
     cache_remote_files: true,
     cache_remote_duration: 86400, // 1d cache duration in seconds
+    enlarge_image: false, // avoid upscaling of images when given size is bigger then current image size
     systems: {},
 };

@@ -103,7 +103,7 @@ const Image = function () {
                     return image;
                 }
 
-                image.buffer = await lib.apply_transformations(data, image.type, target_config);
+                image.buffer = await lib.apply_transformations(data, image.type, target_config, config);
 
                 return image;
             },
