@@ -1,6 +1,6 @@
 {
     "name": "@wyvr/image",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Image processing for APIs with sharp/vips",
     "scripts": {
         "dev-hapi": "nodemon --ignore test samples/hapi_basic.js",

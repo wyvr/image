@@ -47,7 +47,7 @@ const Image = function () {
                     result.success = true;
                     result.from_cache = true;
                     result.type = cached_file.type;
-                    const type = lib.get_mime_type(target_config.params?.t);
+                    const type = lib.get_mime_type(target_config && target_config.params && target_config.params.t ? target_config.params.t : null);
                     if (type) {
                         result.type = type;
                     }
@@ -77,7 +77,7 @@ const Image = function () {
                             result.error.push(e);
                         }
                     }
-                    const type = lib.get_mime_type(target_config.params?.t);
+                    const type = lib.get_mime_type(target_config && target_config.params && target_config.params.t ? target_config.params.t : null);
                     if (type) {
                         image.type = type;
                     }

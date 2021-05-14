@@ -321,15 +321,15 @@ module.exports = {
         if (!target_config) {
             return null;
         }
-        if (target_config.accept?.webp) {
+        if (target_config && target_config.accept && target_config.accept.webp) {
             return 'webp';
         }
-        return normalize_param_value.string_allowed(target_config.params?.t, null, this.get_config('allowed_extensions'), this.get_config('alias_extensions'));
+        return normalize_param_value.string_allowed(target_config && target_config.params && target_config.params.t ? target_config.params.t : null, null, this.get_config('allowed_extensions'), this.get_config('alias_extensions'));
     },
     async create_image_data(buffer, target_config) {
         try {
             let sharp_instance = await sharp(buffer);
-            if (target_config?.params?.t) {
+            if (target_config && target_config.params && target_config.params.t) {
                 const outputOptions = this.get_image_data_output_options(target_config);
                 return sharp_instance.toFormat(target_config.params.t, outputOptions);
             }
@@ -343,13 +343,13 @@ module.exports = {
     get_image_data_output_options(target_config) {
         const options = {};
         // gif has no quality
-        if (target_config?.params?.q && target_config?.params?.t != 'gif') {
-            options.quality = parseInt(target_config?.params?.q + '', 10);
+        if (target_config && target_config.params && target_config.params.q && target_config && target_config.params && target_config.params.t && target_config.params.t != 'gif') {
+            options.quality = parseInt(target_config && target_config.params && target_config.params.q ? target_config.params.q+'' : '', 10);
         }
         return options;
     },
     async apply_transformations(data, type, target_config, config) {
-        if (target_config.params?.w != null || target_config.params?.h != null) {
+        if ((target_config && target_config.params && target_config.params.w && target_config.params.w != null) || (target_config && target_config.params && target_config.params.h && target_config.params.h != null)) {
             // fill with white background color when jpg otherwise transparent
             let background = color(config.background);
             if (type && type == 'image/jpeg') {
@@ -357,25 +357,25 @@ module.exports = {
             }
             let resize = {};
             // (W)idth
-            if (target_config.params?.w != null) {
+            if (target_config && target_config.params && target_config.params.w && target_config.params.w != null) {
                 resize.width = target_config.params.w;
             }
             // (H)eight
-            if (target_config.params?.h != null) {
+            if (target_config && target_config.params && target_config.params.h && target_config.params.h != null) {
                 resize.height = target_config.params.h;
             }
             // (M)ode
-            if (target_config.params?.m != null) {
+            if (target_config && target_config.params && target_config.params.m && target_config.params.m != null) {
                 resize.fit = target_config.params.m;
                 resize.background = background;
             }
             // check if image is smaller then the given sizes and change the width to return propotional correct image
-            if (!config?.enlarge_image && resize.width && resize.height && resize.fit == 'contain') {
+            if ((config && !config.enlarge_image) && resize.width && resize.height && resize.fit == 'contain') {
                 const meta_data = await data.metadata();
                 resize = this.adjust_resize(resize, meta_data);
             }
             // (P)osition
-            if (target_config.params?.p != null) {
+            if (target_config && target_config.params && target_config.params.p && target_config.params.p != null) {
                 // remove center and middle, not allowed in sharp
                 // @see https://sharp.pixelplumbing.com/api-resize#resize
                 resize.position = target_config.params.p
@@ -387,10 +387,10 @@ module.exports = {
             // (Q)uality gets set in the output options
 
             // (F)ilter
-            if (target_config.params?.f != null) {
-                const filter_keys = Object.keys(target_config.params?.f);
+            if (target_config && target_config.params && target_config.params.f && target_config.params.f != null) {
+                const filter_keys = Object.keys(target_config.params.f);
                 filter_keys.forEach((filter) => {
-                    const filter_value = target_config.params?.f[filter];
+                    const filter_value = target_config.params.f[filter];
                     switch (filter) {
                         case 'blur':
                             data = data.blur(filter_value);
